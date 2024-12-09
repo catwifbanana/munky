@@ -474,83 +474,106 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const moreMemeBtn = document.getElementById('more-memes-btn');
-    const hideMemeBtn = document.getElementById('hide-memes-btn');
+    const moreMemeBtn = document.querySelector('#meme-gallery .text-center');
     const memeContainer = document.getElementById('meme-container');
-    const memeItems = document.querySelectorAll('.meme-item');
+    const initialMemes = document.getElementById('initial-memes');
     const memeModal = document.getElementById('meme-modal');
     const modalImage = document.getElementById('modal-image');
-    const closeModalBtn = document.getElementById('close-modal');
 
-    // Additional memes (you can replace these with actual meme URLs)
-    const additionalMemes = [
-        '/memes/4.jpg',
-        '/memes/5.jpg',
-        '/memes/6.jpg',
-        '/memes/7.jpg',
-        '/memes/8.jpg',
-        '/memes/9.jpg'
-    ];
+    let allMemes = [];
+    let isShowingAllMemes = false;
 
-    moreMemeBtn.addEventListener('click', function() {
-        // Clear existing additional memes
-        memeContainer.innerHTML = '';
+    // Function to create meme element
+    function createMemeElement(memeSrc) {
+        const memeDiv = document.createElement('div');
+        memeDiv.className = 'aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover cursor-pointer meme-item';
+        
+        const memeImg = document.createElement('img');
+        memeImg.src = memeSrc;
+        memeImg.className = 'rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300';
+        memeImg.setAttribute('fullsize', memeSrc);
+        
+        memeDiv.appendChild(memeImg);
 
-        // Load all additional memes at once
-        additionalMemes.forEach(memeSrc => {
-            const memeDiv = document.createElement('div');
-            memeDiv.className = 'aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover cursor-pointer meme-item';
-            
-            const memeImg = document.createElement('img');
-            memeImg.src = memeSrc;
-            memeImg.className = 'rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300';
-            memeImg.setAttribute('fullsize', memeSrc);
-            
-            memeDiv.appendChild(memeImg);
-            memeContainer.appendChild(memeDiv);
-
-            // Add modal functionality to new memes
-            memeDiv.addEventListener('click', function() {
-                modalImage.src = memeImg.getAttribute('fullsize');
-                memeModal.classList.remove('hidden');
-                memeModal.classList.add('flex');
-            });
-        });
-
-        // Hide "More Memes" button and show "Hide Memes" button
-        moreMemeBtn.classList.add('hidden');
-        hideMemeBtn.classList.remove('hidden');
-    });
-
-    hideMemeBtn.addEventListener('click', function() {
-        memeContainer.innerHTML = '';
-        currentMemeIndex = 0;
-        moreMemeBtn.classList.remove('hidden');
-        hideMemeBtn.classList.add('hidden');
-    });
-
-    // Modal functionality for initial memes
-    memeItems.forEach(item => {
-        item.addEventListener('click', function() {
-            const img = item.querySelector('img');
-            modalImage.src = img.getAttribute('fullsize');
+        // Add modal functionality
+        memeDiv.addEventListener('click', function() {
+            modalImage.src = memeImg.getAttribute('fullsize');
             memeModal.classList.remove('hidden');
             memeModal.classList.add('flex');
         });
-    });
 
-    // Close modal functionality
-    closeModalBtn.addEventListener('click', function() {
-        memeModal.classList.remove('flex');
-        memeModal.classList.add('hidden');
-    });
+        return memeDiv;
+    }
 
+    // Fetch meme files
+    async function fetchMemes() {
+        try {
+            const response = await fetch('/memes');
+            const memes = await response.json();
+            return memes.filter(meme => 
+                meme.toLowerCase().endsWith('.jpg') || 
+                meme.toLowerCase().endsWith('.jpeg') || 
+                meme.toLowerCase().endsWith('.png') || 
+                meme.toLowerCase().endsWith('.webp')
+            );
+        } catch (error) {
+            console.error('Error fetching memes:', error);
+            return [];
+        }
+    }
+
+    // Initialize memes
+    async function initializeMemes() {
+        allMemes = await fetchMemes();
+
+        // Ensure first 3 memes have predictable names if possible
+        const predictableMemes = ['1.jpg', '2.jpg', '3.jpg'].filter(m => allMemes.includes(m));
+        const initialMemeUrls = predictableMemes.length === 3 
+            ? predictableMemes 
+            : allMemes.slice(0, 3);
+
+        // Populate initial memes
+        initialMemeUrls.forEach(memeName => {
+            const memeElement = createMemeElement(`/memes/${memeName}`);
+            initialMemes.appendChild(memeElement);
+        });
+
+        // Prepare additional memes (exclude initial memes)
+        const additionalMemeUrls = allMemes.filter(m => !initialMemeUrls.includes(m));
+
+        // Toggle meme visibility
+        moreMemeBtn.addEventListener('click', function() {
+            if (!isShowingAllMemes) {
+                // Clear existing additional memes
+                memeContainer.innerHTML = '';
+
+                // Load additional memes
+                additionalMemeUrls.forEach(memeName => {
+                    const memeElement = createMemeElement(`/memes/${memeName}`);
+                    memeContainer.appendChild(memeElement);
+                });
+
+                memeContainer.classList.remove('hidden');
+                moreMemeBtn.textContent = 'Hide Memes';
+                isShowingAllMemes = true;
+            } else {
+                memeContainer.classList.add('hidden');
+                moreMemeBtn.textContent = 'More Memes';
+                isShowingAllMemes = false;
+            }
+        });
+    }
+
+    // Modal close functionality
     memeModal.addEventListener('click', function(event) {
-        if (event.target === memeModal) {
+        if (event.target === memeModal || event.target.textContent === '×') {
             memeModal.classList.remove('flex');
             memeModal.classList.add('hidden');
         }
     });
+
+    // Initialize memes
+    initializeMemes();
 });
 </script>
 </div>
