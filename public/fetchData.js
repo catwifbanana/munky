@@ -22,13 +22,18 @@ async function fetchData() {
         // Price change with color
         const priceChange = attributes.price_percent_change;
         const priceChangeElement = document.getElementById('price-change');
-        priceChangeElement.textContent = `${priceChange}`; // Ensure only one %
+        
+        // Ensure the % sign is included and handle the color
+        priceChangeElement.textContent = `${priceChange}%`; 
+        
+        // Reset classes first to ensure clean slate
+        priceChangeElement.classList.remove('text-red-500', 'text-green-500');
         
         // Color coding based on price change
-        if (priceChange >= 0) {
-            priceChangeElement.className = 'text-green-500';
+        if (parseFloat(priceChange) >= 0) {
+            priceChangeElement.classList.add('text-green-500');
         } else {
-            priceChangeElement.className = 'text-red-500';
+            priceChangeElement.classList.add('text-red-500');
         }
 
         document.getElementById('volume').textContent = `$${formatNumber(attributes.from_volume_in_usd)}`;
