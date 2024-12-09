@@ -441,43 +441,83 @@ document.addEventListener('DOMContentLoaded', () => {
 <div class="bg-white rounded-lg p-6 shadow-md mb-12 relative">
     <h2 class="text-2xl font-bold mb-4">Meme Gallery 🐒</h2>
     
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-        <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover">
-            <img src="/memes/1.jpg" alt="Munky Meme 1" class="rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4" id="initial-memes">
+        <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover cursor-pointer meme-item">
+            <img src="/memes/1.jpg" alt="Munky Meme 1" class="rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300" data-fullsize="/memes/1.jpg">
         </div>
-        <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover">
-            <img src="/memes/2.jpg" alt="Munky Meme 2" class="rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300">
+        <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover cursor-pointer meme-item">
+            <img src="/memes/2.jpg" alt="Munky Meme 2" class="rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300" data-fullsize="/memes/2.jpg">
         </div>
-        <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover">
-            <img src="/memes/3.jpg" alt="Munky Meme 3" class="rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300">
+        <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover cursor-pointer meme-item">
+            <img src="/memes/3.jpg" alt="Munky Meme 3" class="rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300" data-fullsize="/memes/3.jpg">
         </div>
     </div>
 
     <div id="meme-container" class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4"></div>
 
     <div class="text-center mt-6">
-        <button id="more-memes-btn" class="bg-[#aba0f1] text-white px-8 py-3 rounded-lg hover:bg-opacity-90 transition duration-300">
+        <button id="more-memes-btn" class="bg-[#8B4513] text-white px-8 py-3 rounded-lg hover:bg-opacity-90 transition duration-300">
             More Memes
         </button>
+    </div>
+
+    <!-- Modal for full-size image -->
+    <div id="meme-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden items-center justify-center p-4">
+        <div class="relative max-w-full max-h-full">
+            <img id="modal-image" src="" alt="Full Size Meme" class="max-w-full max-h-screen object-contain">
+            <button id="close-modal" class="absolute top-0 right-0 m-4 text-white text-3xl">&times;</button>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const memeContainer = document.getElementById('meme-container');
+            const initialMemesContainer = document.getElementById('initial-memes');
             const moreMemesBtn = document.getElementById('more-memes-btn');
+            const memeModal = document.getElementById('meme-modal');
+            const modalImage = document.getElementById('modal-image');
+            const closeModalBtn = document.getElementById('close-modal');
             let memesLoaded = false;
+
+            // Function to add click event to meme images
+            function addMemeClickHandler(memeDiv) {
+                memeDiv.addEventListener('click', (e) => {
+                    const img = e.currentTarget.querySelector('img');
+                    const fullsizeImg = img.getAttribute('data-fullsize');
+                    modalImage.src = fullsizeImg;
+                    memeModal.classList.remove('hidden');
+                    memeModal.classList.add('flex');
+                });
+            }
+
+            // Add click handlers to initial memes
+            document.querySelectorAll('#initial-memes .meme-item').forEach(addMemeClickHandler);
+
+            // Close modal functionality
+            closeModalBtn.addEventListener('click', () => {
+                memeModal.classList.remove('flex');
+                memeModal.classList.add('hidden');
+            });
+
+            memeModal.addEventListener('click', (e) => {
+                if (e.target === memeModal) {
+                    memeModal.classList.remove('flex');
+                    memeModal.classList.add('hidden');
+                }
+            });
 
             moreMemesBtn.addEventListener('click', () => {
                 if (!memesLoaded) {
                     // Load additional memes
                     for (let i = 4; i <= 10; i++) {
                         const memeDiv = document.createElement('div');
-                        memeDiv.className = 'aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover';
+                        memeDiv.className = 'aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover cursor-pointer meme-item';
                         
                         const img = document.createElement('img');
                         img.src = `/memes/${i}.jpg`;
                         img.alt = `Munky Meme ${i}`;
                         img.className = 'rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300';
+                        img.setAttribute('data-fullsize', `/memes/${i}.jpg`);
                         
                         // Only add if image exists
                         img.onerror = function() {
@@ -486,6 +526,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         
                         memeDiv.appendChild(img);
                         memeContainer.appendChild(memeDiv);
+
+                        // Add click handler to new memes
+                        addMemeClickHandler(memeDiv);
                     }
 
                     moreMemesBtn.textContent = 'Hide Memes';
