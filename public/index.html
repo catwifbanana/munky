@@ -456,7 +456,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <div id="meme-container" class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4"></div>
 
     <div class="text-center mt-6">
-        <button id="more-memes-btn" class="bg-[#8B4513] text-white px-8 py-3 rounded-lg hover:bg-opacity-90 transition duration-300">
+        <button id="more-memes-btn" class="bg-[#D2691E] text-white px-8 py-3 rounded-lg hover:bg-[#A0522D] transition duration-300">
             More Memes
         </button>
     </div>
@@ -479,7 +479,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const closeModalBtn = document.getElementById('close-modal');
             let memesLoaded = false;
 
-            // Function to add click event to meme images
             function addMemeClickHandler(memeDiv) {
                 memeDiv.addEventListener('click', (e) => {
                     const img = e.currentTarget.querySelector('img');
@@ -490,10 +489,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // Add click handlers to initial memes
             document.querySelectorAll('#initial-memes .meme-item').forEach(addMemeClickHandler);
 
-            // Close modal functionality
             closeModalBtn.addEventListener('click', () => {
                 memeModal.classList.remove('flex');
                 memeModal.classList.add('hidden');
@@ -508,7 +505,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             moreMemesBtn.addEventListener('click', () => {
                 if (!memesLoaded) {
-                    // Load additional memes
                     for (let i = 4; i <= 10; i++) {
                         const memeDiv = document.createElement('div');
                         memeDiv.className = 'aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover cursor-pointer meme-item';
@@ -519,22 +515,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         img.className = 'rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300';
                         img.setAttribute('data-fullsize', `/memes/${i}.jpg`);
                         
-                        // Only add if image exists
                         img.onerror = function() {
                             memeDiv.style.display = 'none';
                         };
                         
                         memeDiv.appendChild(img);
                         memeContainer.appendChild(memeDiv);
-
-                        // Add click handler to new memes
                         addMemeClickHandler(memeDiv);
                     }
 
                     moreMemesBtn.textContent = 'Hide Memes';
                     memesLoaded = true;
                 } else {
-                    // Hide additional memes
                     memeContainer.innerHTML = '';
                     moreMemesBtn.textContent = 'More Memes';
                     memesLoaded = false;
@@ -543,6 +535,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     </script>
 </div>
+
             </div>
         </div>
     </div>
