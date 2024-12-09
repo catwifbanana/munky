@@ -473,7 +473,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     const moreMemeBtn = document.getElementById('more-memes-btn');
     const hideMemeBtn = document.getElementById('hide-memes-btn');
     const memeContainer = document.getElementById('meme-container');
@@ -482,34 +482,36 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalImage = document.getElementById('modal-image');
     const closeModalBtn = document.getElementById('close-modal');
 
-    // Additional memes (you can replace these with actual meme URLs)
-    const additionalMemes = [
-        '/memes/4.jpg',
-        '/memes/5.jpg',
-        '/memes/6.jpg',
-        '/memes/7.jpg',
-        '/memes/8.jpg',
-        '/memes/9.jpg'
-    ];
+    async function fetchMemes() {
+        try {
+            const response = await fetch('/memes/');
+            const memeFiles = await response.json(); // Expecting the server to return JSON
+            return memeFiles.filter(file => file.match(/\.(jpg|jpeg|png|gif)$/i));
+        } catch (error) {
+            console.error('Error loading memes:', error);
+            return [];
+        }
+    }
 
-    moreMemeBtn.addEventListener('click', function() {
+    moreMemeBtn.addEventListener('click', async function() {
+        const memes = await fetchMemes();
+
         // Clear existing additional memes
         memeContainer.innerHTML = '';
 
-        // Load all additional memes at once
-        additionalMemes.forEach(memeSrc => {
+        // Load all memes dynamically
+        memes.forEach(memeSrc => {
             const memeDiv = document.createElement('div');
             memeDiv.className = 'aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover cursor-pointer meme-item';
-            
+
             const memeImg = document.createElement('img');
-            memeImg.src = memeSrc;
+            memeImg.src = `/memes/${memeSrc}`;
             memeImg.className = 'rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300';
-            memeImg.setAttribute('fullsize', memeSrc);
-            
+            memeImg.setAttribute('fullsize', `/memes/${memeSrc}`);
+
             memeDiv.appendChild(memeImg);
             memeContainer.appendChild(memeDiv);
 
-            // Add modal functionality to new memes
             memeDiv.addEventListener('click', function() {
                 modalImage.src = memeImg.getAttribute('fullsize');
                 memeModal.classList.remove('hidden');
@@ -517,19 +519,16 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        // Hide "More Memes" button and show "Hide Memes" button
         moreMemeBtn.classList.add('hidden');
         hideMemeBtn.classList.remove('hidden');
     });
 
     hideMemeBtn.addEventListener('click', function() {
         memeContainer.innerHTML = '';
-        currentMemeIndex = 0;
         moreMemeBtn.classList.remove('hidden');
         hideMemeBtn.classList.add('hidden');
     });
 
-    // Modal functionality for initial memes
     memeItems.forEach(item => {
         item.addEventListener('click', function() {
             const img = item.querySelector('img');
@@ -539,7 +538,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Close modal functionality
     closeModalBtn.addEventListener('click', function() {
         memeModal.classList.remove('flex');
         memeModal.classList.add('hidden');
