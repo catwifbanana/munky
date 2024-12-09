@@ -27,15 +27,16 @@
 
     /* Background Styles */
     body {
-        background: linear-gradient(to bottom, #F5DEB3, #D2691E);
+        background: linear-gradient(to bottom, #FFF4E0, #FF6B6B);
         background-attachment: fixed;
         min-height: 100vh;
         margin: 0;
         padding: 0;
         overflow-x: hidden;
+        font-family: 'Arial', sans-serif;
     }
     
-    /* Optional: Add subtle noise texture to gradient */
+    /* Subtle Noise Texture */
     body::before {
         content: "";
         position: fixed;
@@ -43,65 +44,79 @@
         left: 0;
         width: 100%;
         height: 100%;
-        opacity: 0.05;
+        opacity: 0.03;
         pointer-events: none;
         background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%" height="100%" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
     }
 
+    /* Image Background Option */
     .image-bg {
-        background-image: url('bg.png'); /* Replace with your image URL */
-        background-size: cover; /* Ensures the image covers the entire screen */
-        background-position: center; /* Centers the image */
-        background-repeat: no-repeat; /* Prevents tiling */
-        min-height: 100vh; /* Ensures it covers the full screen height */
+        background-image: url('bg.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 100vh;
     }
 
     /* Stat Card Styles */
     .stat-card {
-        background: rgba(248, 241, 225, 0.8); /* soft light brown with slight transparency */
-        border-radius: 0.5rem;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 0.75rem;
         padding: 1rem;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(5px); /* Optional: adds a glass-like effect */
+        backdrop-filter: blur(10px);
         transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
     .stat-card:hover {
-        transform: scale(1.02);
+        transform: scale(1.03);
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Monkey/Cat Animation */
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    .cat-animation {
+        animation: bounce 2s infinite ease-in-out;
     }
 
     /* Button Styles */
     .button {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
+        border-radius: 9999px;
         font-weight: bold;
         transition: all 0.3s ease;
         text-align: center;
         cursor: pointer;
+        gap: 0.5rem;
     }
     .button-primary {
-        background-color: #8B4513; /* SaddleBrown */
-        color: #fff;
-        box-shadow: 0 4px 6px rgba(139, 69, 19, 0.2);
+        background-color: #FF6B6B;
+        color: white;
+        box-shadow: 0 4px 6px rgba(255, 107, 107, 0.3);
     }
     .button-primary:hover {
-        background-color: #A0522D; /* Sienna */
+        background-color: #FF5252;
         transform: translateY(-2px);
-        box-shadow: 0 6px 8px rgba(139, 69, 19, 0.3);
+        box-shadow: 0 6px 8px rgba(255, 107, 107, 0.4);
     }
     .button-secondary {
-        background-color: #f1e6d7; /* light beige */
-        color: #000;
-        border: 2px solid #8B4513; /* SaddleBrown */
+        background-color: white;
+        color: #FF6B6B;
+        border: 2px solid #FF6B6B;
     }
     .button-secondary:hover {
-        background-color: #8B4513; /* SaddleBrown */
-        color: #fff;
+        background-color: #FF6B6B;
+        color: white;
         transform: translateY(-2px);
     }
 
-    /* Spinning Animation for Logo */
+    /* Logo Spinning Animation */
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
@@ -110,14 +125,43 @@
         animation: spin 2s linear infinite;
     }
 
+    /* Responsive Typography */
+    h1 {
+        font-size: 2.5rem;
+        color: #333;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    h2 {
+        font-size: 2rem;
+        color: #444;
+    }
+
     /* Responsive Adjustments */
     @media (max-width: 768px) {
+        body {
+            font-size: 14px;
+        }
         .stat-card {
             padding: 0.75rem;
         }
         .button {
             padding: 0.5rem 1rem;
+            font-size: 0.9rem;
         }
+        h1 {
+            font-size: 2rem;
+        }
+        h2 {
+            font-size: 1.5rem;
+        }
+    }
+
+    /* Additional Hover Effects */
+    .hover-lift {
+        transition: transform 0.3s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-5px);
     }
 </style>
 </head>
