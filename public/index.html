@@ -482,16 +482,19 @@ document.addEventListener('DOMContentLoaded', async function() {
     const modalImage = document.getElementById('modal-image');
     const closeModalBtn = document.getElementById('close-modal');
 
-    async function fetchMemes() {
-        try {
-            const response = await fetch('/api/memes');
-            const memeFiles = await response.json(); // Expecting the server to return JSON
-            return memeFiles.filter(file => file.match(/\.(jpg|jpeg|png|gif)$/i)) && !['1.jpg', '2.jpg', '3.jpg'].includes(file));
-        } catch (error) {
-            console.error('Error loading memes:', error);
-            return [];
-        }
+async function fetchMemes() {
+    try {
+        const response = await fetch('/api/memes');
+        const memeFiles = await response.json(); 
+        // Exclude initial memes
+        return memeFiles.filter(file => 
+            file.match(/\.(jpg|jpeg|png|gif)$/i) && !['1.jpg', '2.jpg', '3.jpg'].includes(file)
+        );
+    } catch (error) {
+        console.error('Error loading memes:', error);
+        return [];
     }
+}
 
     moreMemeBtn.addEventListener('click', async function() {
         const memes = await fetchMemes();
