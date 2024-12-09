@@ -492,18 +492,19 @@ document.addEventListener('DOMContentLoaded', function() {
         '/memes/9.jpg'
     ];
 
-    let currentMemeIndex = 0;
-
     moreMemeBtn.addEventListener('click', function() {
-        // Load more memes
-        for (let i = 0; i < 3 && currentMemeIndex < additionalMemes.length; i++, currentMemeIndex++) {
+        // Clear existing additional memes
+        memeContainer.innerHTML = '';
+
+        // Load all additional memes at once
+        additionalMemes.forEach(memeSrc => {
             const memeDiv = document.createElement('div');
             memeDiv.className = 'aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover cursor-pointer meme-item';
             
             const memeImg = document.createElement('img');
-            memeImg.src = additionalMemes[currentMemeIndex];
+            memeImg.src = memeSrc;
             memeImg.className = 'rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300';
-            memeImg.setAttribute('fullsize', additionalMemes[currentMemeIndex]);
+            memeImg.setAttribute('fullsize', memeSrc);
             
             memeDiv.appendChild(memeImg);
             memeContainer.appendChild(memeDiv);
@@ -514,14 +515,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 memeModal.classList.remove('hidden');
                 memeModal.classList.add('flex');
             });
-        }
+        });
 
-        // Hide "More Memes" button if all memes are loaded
-        if (currentMemeIndex >= additionalMemes.length) {
-            moreMemeBtn.classList.add('hidden');
-        }
-
-        // Show "Hide Memes" button
+        // Hide "More Memes" button and show "Hide Memes" button
+        moreMemeBtn.classList.add('hidden');
         hideMemeBtn.classList.remove('hidden');
     });
 
