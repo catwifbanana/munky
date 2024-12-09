@@ -440,31 +440,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-<!-- Meme Gallery -->
-<div class="bg-white rounded-lg p-6 shadow-md mb-12">
-    <details class="w-full">
-        <summary class="cursor-pointer text-2xl font-bold mb-4 bg-gray-100 rounded-lg p-4 hover:bg-gray-200 transition duration-300">
-            Meme Gallery 🐒
-        </summary>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-            <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
-                <a href="https://imgur.com/a/TVMz30z" target="_blank">
-                    <img src="https://i.imgur.com/BT0xE3h.jpg" alt="Munky Meme 1" class="rounded-lg max-w-full max-h-full object-contain hover:scale-105 transition duration-300">
-                </a>
-            </div>
-            <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
-                <a href="https://imgur.com/a/TVMz30z" target="_blank">
-                    <img src="https://i.imgur.com/ZYQh1Xy.jpg" alt="Munky Meme 2" class="rounded-lg max-w-full max-h-full object-contain hover:scale-105 transition duration-300">
-                </a>
-            </div>
-            <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
-                <a href="https://imgur.com/a/TVMz30z" target="_blank">
-                    <img src="https://i.imgur.com/JbOQkLq.jpg" alt="Munky Meme 3" class="rounded-lg max-w-full max-h-full object-contain hover:scale-105 transition duration-300">
-                </a>
-            </div>
-        </div>
-    </details>
-</div>
+::::::: {.bg-white .rounded-lg .p-6 .shadow-md .mb-12}
+Meme Gallery 🐒
+
+:::::: {.grid .grid-cols-1 .md:grid-cols-3 .gap-4 .mt-4 .relative}
+::: {.aspect-square .bg-gray-100 .rounded-lg .flex .items-center .justify-center}
+[![Munky Meme 1](/memes/1.jpg){.rounded-lg .max-w-full .max-h-full .object-contain .hover:scale-105 .transition .duration-300}]
+:::
+
+::: {.aspect-square .bg-gray-100 .rounded-lg .flex .items-center .justify-center}
+[![Munky Meme 2](/memes/2.jpg){.rounded-lg .max-w-full .max-h-full .object-contain .hover:scale-105 .transition .duration-300}]
+:::
+
+::: {.aspect-square .bg-gray-100 .rounded-lg .flex .items-center .justify-center}
+[![Munky Meme 3](/memes/3.jpg){.rounded-lg .max-w-full .max-h-full .object-contain .hover:scale-105 .transition .duration-300}]
+:::
+
+::::: {#more-memes-dropdown .absolute .bottom-0 .right-0 .mt-4}
+<details class="relative">
+  <summary class="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
+    More Memes
+  </summary>
+  <div class="absolute right-0 mt-2 bg-white shadow-lg rounded-lg p-4 grid grid-cols-3 gap-4">
+    <!-- Dynamically populated memes from 4.jpg onwards -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const memeContainer = document.querySelector('#more-memes-dropdown details div');
+        for (let i = 4; i <= 10; i++) { // Adjust max number as needed
+          const memeElement = document.createElement('div');
+          memeElement.className = 'aspect-square bg-gray-100 rounded-lg flex items-center justify-center';
+          memeElement.innerHTML = `
+            <img src="/memes/${i}.jpg" 
+                 class="rounded-lg max-w-full max-h-full object-contain hover:scale-105 transition duration-300" 
+                 alt="Munky Meme ${i}">
+          `;
+          memeContainer.appendChild(memeElement);
+        }
+      });
+    </script>
+  </div>
+</details>
+:::::
+::::::
+:::::::
             </div>
         </div>
     </div>
