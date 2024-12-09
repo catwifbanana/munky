@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Munky- Reject humanity, return to $Munky!</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+<style>
+    @keyframes fall {
+        0% {
+            transform: translateY(-50px) rotate(0deg);
+        }
+        100% {
+            transform: translateY(100vh) rotate(360deg);
+        }
+    }
+    .banana {
+        font-size: 24px;
+        position: absolute;
+        z-index: 0;
+        animation: fall linear infinite;
+    }
+    .gradient-bg {
+        background: linear-gradient(180deg, #f4e1d2 0%, #d7b8a3 100%); /* light to medium brown */
+    }
+    .stat-card {
+        background: #f8f1e1; /* soft light brown */
+        border-radius: 0.5rem;
+        padding: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .button {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+    .button-primary {
+        background-color: #8B4513; /* SaddleBrown */
+        color: #fff;
+        box-shadow: 0 4px 6px rgba(139, 69, 19, 0.2);
+    }
+    .button-primary:hover {
+        background-color: #A0522D; /* Sienna */
+        transform: translateY(-2px);
+    }
+    .button-secondary {
+        background-color: #f1e6d7; /* light beige */
+        color: #000;
+        border: 2px solid #8B4513; /* SaddleBrown */
+    }
+    .button-secondary:hover {
+        background-color: #8B4513; /* SaddleBrown */
+        color: #fff;
+        transform: translateY(-2px);
+    }
+    /* Spinning animation for the logo */
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .spin {
+        animation: spin 2s linear infinite;
+    }
+</style>
+</head>
+<body class="gradient-bg min-h-screen" onLoad="fetchData()">
+<audio id="backgroundMusic" loop>
+    <source src="/munky.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const audio = document.getElementById('backgroundMusic');
+    const logo = document.getElementById('logo'); // Get the logo element
+
+    // Attempt multiple methods to force play on interaction
+    function forcePlay() {
+        if (audio.paused) {
+            audio.play().catch(error => {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    const context = new AudioContext();
+                    const source = context.createBufferSource();
+                    source.connect(context.destination);
+                    source.start();
+                    
+                    setTimeout(() => {
+                        audio.play().catch(console.error);
+                    }, 100);
+                }
+            });
+        }
+    }
+
+    // Add play and pause event listeners to control the spinning logo
+    audio.addEventListener('play', () => {
+        logo.classList.add('spin'); // Add spinning animation when music plays
+    });
+
+    audio.addEventListener('pause', () => {
+        logo.classList.remove('spin'); // Remove spinning animation when music pauses
+    });
+
+    // Trigger play on touchstart, click, or other interactions
+    const interactionEvents = ['touchstart', 'click', 'scroll', 'mousemove'];
+    interactionEvents.forEach(event => {
+        window.addEventListener(event, () => {
+            if (!audio.paused) return; // Skip if already playing
+            forcePlay(); // Play the audio
+        }, { once: true });
+    });
+
+    // For touchmove, only trigger once per session
+    window.addEventListener('touchmove', forcePlay, { once: true });
+});
+</script>
+
+<div id="bananas" class="fixed inset-0 pointer-events-none overflow-hidden"></div>
+<div class="container mx-auto px-4 pt-8">
+    <div class="text-center mb-12">
+        <img id="logo" src="munky.webp" alt="CatWifBanana Logo" class="mx-auto w-32 h-32 rounded-full shadow-lg mb-4">
+        <h1 class="text-4xl font-bold mb-2">Munky</h1>
+        <p class="text-xl text-gray-600">Reject humanity, return to $Munky 🐒</p>
+    </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="stat-card">
+                <div class="text-sm text-gray-500">Price</div>
+                <div class="text-xl font-bold" id="price">Loading...</div>
+                <div class="text-sm text-red-500" id="price-change">Loading...</div>
+            </div>
+            <div class="stat-card">
+                <div class="text-sm text-gray-500">24h Volume</div>
+                <div class="text-xl font-bold" id="volume">Loading...</div>
+            </div>
+            <div class="stat-card">
+                <div class="text-sm text-gray-500">Liquidity</div>
+                <div class="text-xl font-bold" id="liquidity">Loading...</div>
+            </div>
+            <div class="stat-card">
+                <div class="text-sm text-gray-500">Market Cap (FDV)</div>
+                <div class="text-xl font-bold" id="marketcap">Loading...</div>
+            </div>
+        </div>
+
+<!-- Action Buttons -->
+<div class="flex flex-wrap justify-center gap-6 mb-12">
+
+  <!-- Swap via Phantom -->
+  <a href="https://phantom.app/tokens/solana/65wwCdZaHvWLXKh7bZQDaRsY7yRj97sX9VDyGXMXpump" 
+     target="_blank"
+     class="group relative inline-flex items-center px-8 py-4 text-lg font-bold text-white 
+     rounded-full overflow-hidden hover:scale-105 transform transition-all duration-300 
+     shadow-lg hover:shadow-xl" 
+     style="background-color: #aba0f1;">
+    <span class="relative flex items-center">
+      <img src="./icons/3.webp" alt="Rocket Icon" class="w-6 h-6">
+      <span class="ml-2 group-hover:animate-bounce">Swap via Phantom</span>
+    </span>
+  </a>
+
+  <!-- Check on DEX -->
+  <a href="https://dexscreener.com/solana/65wwCdZaHvWLXKh7bZQDaRsY7yRj97sX9VDyGXMXpump" 
+     target="_blank"
+     class="group relative inline-flex items-center px-8 py-4 text-lg font-bold text-gray-700 bg-white rounded-full overflow-hidden hover:scale-105 transform transition-all duration-300 border-2 border-gray-100 hover:border-yellow-300 shadow-lg hover:shadow-xl"
+     style="background-color: #ffffff;">
+    <span class="relative flex items-center">
+      <img src="./icons/1.webp" alt="DEX Icon" class="w-6 h-6">
+      <span class="ml-2">Check on DEX</span>
+    </span>
+  </a>
+
+  <!-- Join Telegram -->
+  <a href="https://t.me/SolMunky" 
+     target="_blank"
+     class="group relative inline-flex items-center px-8 py-4 text-lg font-bold text-white 
+     rounded-full overflow-hidden hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-xl"
+     style="background-color: #29a9eb;">
+    <span class="relative flex items-center">
+      <img src="./icons/2.webp" alt="Telegram Icon" class="w-6 h-6">
+      <span class="ml-2 group-hover:animate-bounce">Join Telegram</span>
+    </span>
+  </a>
+
+  <!-- Join Discord -->
+  <a href="https://discord.gg/jdkZqENaKr" 
+     target="_blank"
+     class="group relative inline-flex items-center px-8 py-4 text-lg font-bold text-white 
+     rounded-full overflow-hidden hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-xl"
+     style="background-color: #5663f7;">
+    <span class="relative flex items-center">
+      <img src="./icons/4.webp" alt="Discord Icon" class="w-6 h-6">
+      <span class="ml-2 group-hover:animate-bounce">Join Discord</span>
+    </span>
+  </a>
+
+</div>
+
+
+
+  <style>
+    @keyframes shine {
+      from {
+        transform: translateX(-100%) rotate(45deg);
+      }
+      to {
+        transform: translateX(100%) rotate(45deg);
+      }
+    }
+    
+    @keyframes gradient {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .animate-shine {
+      animation: shine 1s ease-in-out;
+    }
+
+    .animate-gradient {
+      background-size: 200% 200%;
+      animation: gradient 3s ease infinite;
+    }
+  </style>
+</div>
+
+        <div class="bg-white rounded-lg p-6 shadow-md mb-12">
+            <h2 class="text-2xl font-bold mb-4">Trading Activity (24h)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="text-center">
+                    <div class="text-gray-500 mb-1">Transactions</div>
+                    <div class="text-2xl font-bold" id="transactions">Loading...</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-gray-500 mb-1">Buyers</div>
+                    <div class="text-2xl font-bold text-green-500" id="buyers">Loading...</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-gray-500 mb-1">Sellers</div>
+                    <div class="text-2xl font-bold text-red-500" id="sellers">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+<div class="relative">
+    <!-- Cat container - positioned behind the roadmap -->
+    <div class="cat-container absolute w-32 h-32 pointer-events-none" style="z-index: -1;">
+        <img src="munky.png" alt="Jumping Munky" class="w-full h-full object-contain cat-animation" id="cat">
+    </div>
+
+    <!-- Roadmap section -->
+    <div class="bg-white rounded-lg p-6 shadow-md mb-12">
+        <h2 class="text-2xl font-bold mb-4">Roadmap 🗺️</h2>
+        <div class="space-y-6">
+            <div class="flex items-start">
+                <div class="bg-yellow-400 rounded-full p-2 mr-4">
+                    🚀
+                </div>
+                <div>
+                    <h3 class="font-bold">Phase 1: Launch</h3>
+                    <p class="text-gray-600">Token launch on Raydium, community building, and initial marketing push</p>
+                </div>
+            </div>
+            <div class="flex items-start">
+                <div class="bg-yellow-400 rounded-full p-2 mr-4">
+                    📈
+                </div>
+                <div>
+                    <h3 class="font-bold">Phase 2: Growth</h3>
+                    <p class="text-gray-600">Partnerships, exchange listings, and expanded marketing</p>
+                </div>
+            </div>
+            <div class="flex items-start">
+                <div class="bg-yellow-400 rounded-full p-2 mr-4">
+                    🛠️
+                </div>
+                <div>
+                    <h3 class="font-bold">Phase 3: Utility</h3>
+                    <p class="text-gray-600">Development of use cases and community tools</p>
+                </div>
+            </div>
+            <div class="flex items-start">
+                <div class="bg-yellow-400 rounded-full p-2 mr-4">
+                    🌍
+                </div>
+                <div>
+                    <h3 class="font-bold">Phase 4: Expansion</h3>
+                    <p class="text-gray-600">Global expansion and ecosystem development</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .cat-animation {
+        opacity: 0;
+        position: absolute;
+        bottom: 0;
+        width: 50px;
+        height: 50px;
+        transform: translate(-50%, -100%);
+        transition: transform 0.5s, opacity 0.5s, left 0.5s;
+    }
+</style>
+
+<script>
+    function randomJump() {
+        const cat = document.getElementById("cat");
+
+        if (!cat) return; // Check if the cat element exists to prevent errors
+
+        // Generate random jump height, horizontal position, and delay
+        const randomHeight = Math.floor(Math.random() * 200) + 100; // Random height between 100px and 300px
+        const randomLeft = Math.floor(Math.random() * 90); // Random position between 0% and 90% (to stay on screen)
+        const randomDelay = Math.floor(Math.random() * 5000) + 2000; // Random delay between 2s and 7s
+
+        // Set random horizontal position
+        cat.style.left = `${randomLeft}%`;
+
+        // Animate the cat
+        cat.style.transition = "none";
+        cat.style.transform = "translate(-50%, -100%)"; // Reset position
+        cat.style.opacity = "0";
+
+        setTimeout(() => {
+            cat.style.transition = "transform 1s, opacity 0.5s";
+            cat.style.opacity = "1";
+            cat.style.transform = `translate(-50%, -${randomHeight}px)`;
+
+            // Reset after the jump
+            setTimeout(() => {
+                cat.style.transform = "translate(-50%, 0)";
+                cat.style.opacity = "0";
+            }, 1000); // Match jump duration
+        }, 50);
+
+        // Schedule the next jump
+        setTimeout(randomJump, randomDelay);
+    }
+
+    // Start the animation
+    randomJump();
+</script>
+
+
+
+        <!-- Meme Gallery -->
+        <div class="bg-white rounded-lg p-6 shadow-md mb-12">
+            <h2 class="text-2xl font-bold mb-4">Meme Gallery 🐒</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
+                    <img src="/api/placeholder/300/300" alt="Meme 1" class="rounded-lg">
+                </div>
+                <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
+                    <img src="/api/placeholder/300/300" alt="Meme 2" class="rounded-lg">
+                </div>
+                <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
+                    <img src="/api/placeholder/300/300" alt="Meme 3" class="rounded-lg">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="bg-yellow-800 text-white py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p>© 2024 Munky. Just return to $Munky 🐒🍌</p>
+        </div>
+    </footer>
+    <script src="./fetchData.js"></script>
+    <script src="bananas.js"></script>
+</body>
+</html>
