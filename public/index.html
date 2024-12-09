@@ -440,100 +440,122 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <div class="bg-white rounded-lg p-6 shadow-md mb-12 relative">
     <h2 class="text-2xl font-bold mb-4">Meme Gallery 🐒</h2>
-    
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4" id="initial-memes">
+
+    <div id="initial-memes" class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
         <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover cursor-pointer meme-item">
-            <img src="/memes/1.jpg" alt="Munky Meme 1" class="rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300" data-fullsize="/memes/1.jpg">
+            <img src="/memes/1.jpg" class="rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300" fullsize="/memes/1.jpg" alt="Munky Meme 1">
         </div>
         <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover cursor-pointer meme-item">
-            <img src="/memes/2.jpg" alt="Munky Meme 2" class="rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300" data-fullsize="/memes/2.jpg">
+            <img src="/memes/2.jpg" class="rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300" fullsize="/memes/2.jpg" alt="Munky Meme 2">
         </div>
         <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover cursor-pointer meme-item">
-            <img src="/memes/3.jpg" alt="Munky Meme 3" class="rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300" data-fullsize="/memes/3.jpg">
+            <img src="/memes/3.jpg" class="rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300" fullsize="/memes/3.jpg" alt="Munky Meme 3">
         </div>
     </div>
 
     <div id="meme-container" class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4"></div>
 
-<div class="text-center mt-6">
-    <button id="more-memes-btn" class="bg-orange-600 text-white px-8 py-3 rounded-lg hover:bg-orange-700 transition duration-300 shadow-md hover:shadow-lg">
-        More Memes
-    </button>
-</div>
-
-    <!-- Modal for full-size image -->
-    <div id="meme-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden items-center justify-center p-4">
-        <div class="relative max-w-full max-h-full">
-            <img id="modal-image" src="" alt="Full Size Meme" class="max-w-full max-h-screen object-contain">
-            <button id="close-modal" class="absolute top-0 right-0 m-4 text-white text-3xl">&times;</button>
-        </div>
+    <div class="text-center mt-6">
+        <button id="more-memes-btn" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105">
+            More Memes
+        </button>
+        <button id="hide-memes-btn" class="ml-4 bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 hidden">
+            Hide Memes
+        </button>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const memeContainer = document.getElementById('meme-container');
-            const initialMemesContainer = document.getElementById('initial-memes');
-            const moreMemesBtn = document.getElementById('more-memes-btn');
-            const memeModal = document.getElementById('meme-modal');
-            const modalImage = document.getElementById('modal-image');
-            const closeModalBtn = document.getElementById('close-modal');
-            let memesLoaded = false;
+    <div id="meme-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden items-center justify-center p-4">
+        <div class="relative max-w-full max-h-full">
+            <img id="modal-image" class="max-w-full max-h-screen object-contain" src="" alt="Full Size Meme">
+            <button id="close-modal" class="absolute top-0 right-0 text-white text-4xl font-bold p-4">×</button>
+        </div>
+    </div>
+</div>
 
-            function addMemeClickHandler(memeDiv) {
-                memeDiv.addEventListener('click', (e) => {
-                    const img = e.currentTarget.querySelector('img');
-                    const fullsizeImg = img.getAttribute('data-fullsize');
-                    modalImage.src = fullsizeImg;
-                    memeModal.classList.remove('hidden');
-                    memeModal.classList.add('flex');
-                });
-            }
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const moreMemeBtn = document.getElementById('more-memes-btn');
+    const hideMemeBtn = document.getElementById('hide-memes-btn');
+    const memeContainer = document.getElementById('meme-container');
+    const memeItems = document.querySelectorAll('.meme-item');
+    const memeModal = document.getElementById('meme-modal');
+    const modalImage = document.getElementById('modal-image');
+    const closeModalBtn = document.getElementById('close-modal');
 
-            document.querySelectorAll('#initial-memes .meme-item').forEach(addMemeClickHandler);
+    // Additional memes (you can replace these with actual meme URLs)
+    const additionalMemes = [
+        '/memes/4.jpg',
+        '/memes/5.jpg',
+        '/memes/6.jpg',
+        '/memes/7.jpg',
+        '/memes/8.jpg',
+        '/memes/9.jpg'
+    ];
 
-            closeModalBtn.addEventListener('click', () => {
-                memeModal.classList.remove('flex');
-                memeModal.classList.add('hidden');
+    let currentMemeIndex = 0;
+
+    moreMemeBtn.addEventListener('click', function() {
+        // Load more memes
+        for (let i = 0; i < 3 && currentMemeIndex < additionalMemes.length; i++, currentMemeIndex++) {
+            const memeDiv = document.createElement('div');
+            memeDiv.className = 'aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover cursor-pointer meme-item';
+            
+            const memeImg = document.createElement('img');
+            memeImg.src = additionalMemes[currentMemeIndex];
+            memeImg.className = 'rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300';
+            memeImg.setAttribute('fullsize', additionalMemes[currentMemeIndex]);
+            
+            memeDiv.appendChild(memeImg);
+            memeContainer.appendChild(memeDiv);
+
+            // Add modal functionality to new memes
+            memeDiv.addEventListener('click', function() {
+                modalImage.src = memeImg.getAttribute('fullsize');
+                memeModal.classList.remove('hidden');
+                memeModal.classList.add('flex');
             });
+        }
 
-            memeModal.addEventListener('click', (e) => {
-                if (e.target === memeModal) {
-                    memeModal.classList.remove('flex');
-                    memeModal.classList.add('hidden');
-                }
-            });
+        // Hide "More Memes" button if all memes are loaded
+        if (currentMemeIndex >= additionalMemes.length) {
+            moreMemeBtn.classList.add('hidden');
+        }
 
-            moreMemesBtn.addEventListener('click', () => {
-                if (!memesLoaded) {
-                    for (let i = 4; i <= 10; i++) {
-                        const memeDiv = document.createElement('div');
-                        memeDiv.className = 'aspect-square bg-gray-100 rounded-lg flex items-center justify-center object-cover cursor-pointer meme-item';
-                        
-                        const img = document.createElement('img');
-                        img.src = `/memes/${i}.jpg`;
-                        img.alt = `Munky Meme ${i}`;
-                        img.className = 'rounded-lg w-full h-full object-cover hover:scale-105 transition duration-300';
-                        img.setAttribute('data-fullsize', `/memes/${i}.jpg`);
-                        
-                        img.onerror = function() {
-                            memeDiv.style.display = 'none';
-                        };
-                        
-                        memeDiv.appendChild(img);
-                        memeContainer.appendChild(memeDiv);
-                        addMemeClickHandler(memeDiv);
-                    }
+        // Show "Hide Memes" button
+        hideMemeBtn.classList.remove('hidden');
+    });
 
-                    moreMemesBtn.textContent = 'Hide Memes';
-                    memesLoaded = true;
-                } else {
-                    memeContainer.innerHTML = '';
-                    moreMemesBtn.textContent = 'More Memes';
-                    memesLoaded = false;
-                }
-            });
+    hideMemeBtn.addEventListener('click', function() {
+        memeContainer.innerHTML = '';
+        currentMemeIndex = 0;
+        moreMemeBtn.classList.remove('hidden');
+        hideMemeBtn.classList.add('hidden');
+    });
+
+    // Modal functionality for initial memes
+    memeItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const img = item.querySelector('img');
+            modalImage.src = img.getAttribute('fullsize');
+            memeModal.classList.remove('hidden');
+            memeModal.classList.add('flex');
         });
-    </script>
+    });
+
+    // Close modal functionality
+    closeModalBtn.addEventListener('click', function() {
+        memeModal.classList.remove('flex');
+        memeModal.classList.add('hidden');
+    });
+
+    memeModal.addEventListener('click', function(event) {
+        if (event.target === memeModal) {
+            memeModal.classList.remove('flex');
+            memeModal.classList.add('hidden');
+        }
+    });
+});
+</script>
 </div>
 
 
