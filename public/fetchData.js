@@ -24,7 +24,7 @@ async function fetchData() {
         const priceChangeElement = document.getElementById('price-change');
         
         // Ensure the % sign is included and handle the color
-        priceChangeElement.textContent = `${priceChange}%`; 
+        priceChangeElement.textContent = `${priceChange}`; 
         
         // Reset classes first to ensure clean slate
         priceChangeElement.classList.remove('text-red-500', 'text-green-500');
