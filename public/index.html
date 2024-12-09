@@ -484,7 +484,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     async function fetchMemes() {
         try {
-            const response = await fetch('/memes/');
+            const response = await fetch('/api/memes');
             const memeFiles = await response.json(); // Expecting the server to return JSON
             return memeFiles.filter(file => file.match(/\.(jpg|jpeg|png|gif)$/i));
         } catch (error) {
