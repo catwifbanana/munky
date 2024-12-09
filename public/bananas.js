@@ -12,7 +12,7 @@ function createBananas() {
 
         const gif = document.createElement('img');
         gif.src = 'munky.gif';  // Path to your .gif
-        gif.className = 'w-12 h-12'; // Adjust size as needed
+        gif.className = 'w-32 h-32'; // Adjust size as needed
 
         // Set random horizontal position across the entire width of the container
         banana.style.left = `${Math.random() * 100}%`;
